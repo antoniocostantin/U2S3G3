@@ -1,8 +1,9 @@
 // recuperiamo le temperature in modo dinamico
-const getLavarinoTemperatures = function () {
-    fetch(
-      'https://api.open-meteo.com/v1/forecast?latitude=42.6373&longitude=12.6522&current=temperature_2m&daily=temperature_2m_max,temperature_2m_min&timezone=Europe%2FBerlin'
-    )
+
+let index = 0;
+
+const getbooks = function () {
+    fetch('https://striveschool-api.herokuapp.com/books')
       .then((response) => {
         console.log(response)
         if (response.ok) {
@@ -13,22 +14,30 @@ const getLavarinoTemperatures = function () {
           // mi auto-lancio nel blocco catch!
         }
       })
-      .then((weatherData) => {
-        console.log(weatherData)
-        // prendo min e max
-        const min = weatherData.daily.temperature_2m_min[0] // esploro l'oggetto
-        const max = weatherData.daily.temperature_2m_max[0] // esploro l'oggetto
-        // ora manipolo il dom con min e max
-        // prendo i riferimenti del DOM
-        const minSpan = document.getElementById('min-temp')
-        const maxSpan = document.getElementById('max-temp')
-        // riempio quegli span con min e max
-        minSpan.innerText = min
-        maxSpan.innerText = max
+      .then((bookdata) => {
+        console.log(bookdata)
+        writebook(bookdata, index)
+        const btn = document.querySelector(".btn")
+        btn.addEventListener("click", function(){
+            index ++
+          writebook(bookdata, index)
+        })
       })
       .catch((err) => {
         console.log('ERRORE!', err)
       })
+      
   }
   
-  getLavarinoTemperatures()
+const writebook = function(books,i){
+    const cardimg = document.querySelector(".card-img-top")
+    cardimg.setAttribute("src", `${books[i].img}`)
+    const cardtitle = document.querySelector(".card-title")
+    cardtitle.innerHTML = `${books[i].title}`
+    const cardprice = document.querySelector(".price")
+    cardprice.innerHTML = `${books[i].price} $`
+}
+
+  getbooks()
+
+ 
